@@ -6,7 +6,6 @@ import Link from "next/link";
 import { getImageUrl } from "@/config/config";
 
 export default function Category({ categories }) {
-  console.log(categories);
   return (
     <section className="py-16 px-4 max-w-7xl mx-auto">
       <h2 className="text-4xl font-bold text-center mb-12 text-foreground">
@@ -15,7 +14,7 @@ export default function Category({ categories }) {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
        
-        <Link href={"/products"} className="relative group overflow-hidden rounded-2xl bg-gray-100 aspect-square md:aspect-auto">
+        <Link href={`/products?category=${categories[0]?.id}`}  className="relative group overflow-hidden rounded-2xl bg-gray-100 aspect-square md:aspect-auto">
           <Image
             src={`${getImageUrl(categories[0]?.image)}`}
             alt={categories[0]?.name}
@@ -31,10 +30,8 @@ export default function Category({ categories }) {
           </Button>
         </Link>
 
-        {/* Center Column - Promotion and Accessories */}
         <div className="flex flex-col gap-6 md:h-[600px]">
-          {/* Promotion - Top */}
-          <Link href={"/products"} className="relative group overflow-hidden rounded-2xl bg-gray-100 aspect-square md:flex-1">
+          <Link href={`/products?category=${categories[1]?.id}`} className="relative group overflow-hidden rounded-2xl bg-gray-100 aspect-square md:flex-1">
             <Image
               src={`${getImageUrl(categories[1]?.image)}`}
               alt={categories[1]?.name}
@@ -50,8 +47,7 @@ export default function Category({ categories }) {
             </Button>
           </Link>
 
-          {/* Accessories - Bottom */}
-          <Link href={"/products"} className="relative group overflow-hidden rounded-2xl bg-gray-100 aspect-square md:flex-1">
+          <Link href={`/products?category=${categories[2]?.id}`} className="relative group overflow-hidden rounded-2xl bg-gray-100 aspect-square md:flex-1">
             <Image
               src={`${getImageUrl(categories[2]?.image)}`}
               alt={categories[2]?.name}
@@ -68,8 +64,7 @@ export default function Category({ categories }) {
           </Link>
         </div>
 
-        {/* Men Category - Right Column */}
-        <Link href={"/products"} className="relative group overflow-hidden rounded-2xl bg-gray-100 aspect-square md:aspect-auto">
+        <Link href={`/products?category=${categories[3]?.id}`} className="relative group overflow-hidden rounded-2xl bg-gray-100 aspect-square md:aspect-auto">
           <Image
             src={`${getImageUrl(categories[3]?.image)}`}
             alt={categories[3]?.name}

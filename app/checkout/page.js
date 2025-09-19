@@ -11,8 +11,10 @@ import Navbar from "@/components/common/Navbar";
 import { Switch } from "@/components/ui/switch";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
+import { productStore } from "@/store/useStore";
 
 export default function CheckoutPage() {
+  const { products } = productStore();
   const [step, setStep] = useState(1);
   const [createAccount, setCreateAccount] = useState(false)
   const [formData, setFormData] = useState({
@@ -34,12 +36,9 @@ export default function CheckoutPage() {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const cartItems = [
-    { id: 1, name: "Premium Wireless Headphones", price: 299.99, quantity: 1 },
-    { id: 2, name: "Bluetooth Speaker", price: 149.99, quantity: 2 },
-  ];
 
-  const subtotal = cartItems.reduce(
+
+  const subtotal = products.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0
   );
@@ -157,21 +156,21 @@ export default function CheckoutPage() {
                   <CardTitle>Order Summary</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  {cartItems.map((item) => (
+                  {products.map((item) => (
                     <div
-                      key={item.id}
+                      key={item?.id}
                       className="flex justify-between items-start"
                     >
                       <div className="flex-1">
                         <h4 className="font-medium text-sm text-balance">
-                          {item.name}
+                          {item?.name}
                         </h4>
                         <p className="text-sm text-muted-foreground">
-                          Qty: {item.quantity}
+                          Qty: {item?.quantity}
                         </p>
                       </div>
                       <p className="font-medium">
-                        ${(item.price * item.quantity).toFixed(2)}
+                        {item?.price * item?.quantity}
                       </p>
                     </div>
                   ))}
@@ -179,20 +178,20 @@ export default function CheckoutPage() {
                   <div className="space-y-2">
                     <div className="flex justify-between text-sm">
                       <span>Subtotal</span>
-                      <span>${subtotal.toFixed(2)}</span>
+                      <span>{products.reduce((total, item) => total + item?.price * item?.quantity, 0)}</span>
                     </div>
                     <div className="flex justify-between text-sm">
                       <span>Shipping</span>
-                      <span>${shipping.toFixed(2)}</span>
+                      <span>{shipping}</span>
                     </div>
                     <div className="flex justify-between text-sm">
                       <span>Tax</span>
-                      <span>${tax.toFixed(2)}</span>
+                      <span>{tax}</span>
                     </div>
                     <Separator />
                     <div className="flex justify-between font-bold">
                       <span>Total</span>
-                      <span>${total.toFixed(2)}</span>
+                      <span>{products.reduce((total, item) => total + item?.price * item?.quantity, 0)}</span>
                     </div>
                   </div>
                 </CardContent>

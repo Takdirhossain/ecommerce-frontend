@@ -1,6 +1,7 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
@@ -8,34 +9,62 @@ import { Slider } from "@/components/ui/slider"
 import { Card } from "@/components/ui/card"
 
 const categories = ["Electronics", "Clothing", "Home & Garden", "Sports", "Books", "Beauty"]
-
 const brands = ["Apple", "Samsung", "Nike", "Adidas", "Sony", "Canon"]
 
 export function ProductFilters() {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+
   const [priceRange, setPriceRange] = useState([0, 1000])
   const [selectedCategories, setSelectedCategories] = useState([])
   const [selectedBrands, setSelectedBrands] = useState([])
 
+  // initialize from URL params
+  useEffect(() => {
+    const urlCategories = searchParams.get("categories")?.split(",") || []
+    const urlBrands = searchParams.get("brands")?.split(",") || []
+    const minPrice = parseInt(searchParams.get("minPrice") || "0")
+    const maxPrice = parseInt(searchParams.get("maxPrice") || "1000")
+
+    setSelectedCategories(urlCategories)
+    setSelectedBrands(urlBrands)
+    setPriceRange([minPrice, maxPrice])
+  }, [searchParams])
+
+  const updateParams = (newCategories, newBrands, newPriceRange) => {
+    const params = new URLSearchParams()
+    if (newCategories.length) params.set("categories", newCategories.join(","))
+    if (newBrands.length) params.set("brands", newBrands.join(","))
+    if (newPriceRange[0] !== 0) params.set("minPrice", newPriceRange[0])
+    if (newPriceRange[1] !== 1000) params.set("maxPrice", newPriceRange[1])
+
+    router.push(`/products?${params.toString()}`)
+  }
+
   const handleCategoryChange = (category, checked) => {
-    if (checked) {
-      setSelectedCategories([...selectedCategories, category])
-    } else {
-      setSelectedCategories(selectedCategories.filter((c) => c !== category))
-    }
+    const updated = checked
+      ? [...selectedCategories, category]
+      : selectedCategories.filter((c) => c !== category)
+    setSelectedCategories(updated)
+    updateParams(updated, selectedBrands, priceRange)
   }
 
   const handleBrandChange = (brand, checked) => {
-    if (checked) {
-      setSelectedBrands([...selectedBrands, brand])
-    } else {
-      setSelectedBrands(selectedBrands.filter((b) => b !== brand))
-    }
+    const updated = checked ? [...selectedBrands, brand] : selectedBrands.filter((b) => b !== brand)
+    setSelectedBrands(updated)
+    updateParams(selectedCategories, updated, priceRange)
+  }
+
+  const handlePriceChange = (range) => {
+    setPriceRange(range)
+    updateParams(selectedCategories, selectedBrands, range)
   }
 
   const clearFilters = () => {
     setSelectedCategories([])
     setSelectedBrands([])
     setPriceRange([0, 1000])
+    router.push("/products")
   }
 
   return (
@@ -52,7 +81,14 @@ export function ProductFilters() {
         <div>
           <h3 className="text-sm font-medium text-neutral-900 mb-4">Price Range</h3>
           <div className="px-2">
-            <Slider value={priceRange} onValueChange={setPriceRange} max={1000} min={0} step={10} className="mb-4" />
+            <Slider
+              value={priceRange}
+              onValueChange={handlePriceChange}
+              max={1000}
+              min={0}
+              step={10}
+              className="mb-4"
+            />
             <div className="flex items-center justify-between text-sm text-neutral-600">
               <span>${priceRange[0]}</span>
               <span>${priceRange[1]}</span>
@@ -88,35 +124,10 @@ export function ProductFilters() {
                 <Checkbox
                   id={brand}
                   checked={selectedBrands.includes(brand)}
-                  onCheckedChange={(checked) => handleBrandChange(brand, checked )}
+                  onCheckedChange={(checked) => handleBrandChange(brand, checked)}
                 />
                 <Label htmlFor={brand} className="text-sm text-neutral-700 cursor-pointer">
                   {brand}
-                </Label>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Rating Filter */}
-        <div>
-          <h3 className="text-sm font-medium text-neutral-900 mb-4">Rating</h3>
-          <div className="space-y-3">
-            {[4, 3, 2, 1].map((rating) => (
-              <div key={rating} className="flex items-center space-x-3">
-                <Checkbox id={`rating-${rating}`} />
-                <Label
-                  htmlFor={`rating-${rating}`}
-                  className="text-sm text-neutral-700 cursor-pointer flex items-center"
-                >
-                  <span className="flex">
-                    {Array.from({ length: 5 }, (_, i) => (
-                      <span key={i} className={`text-xs ${i < rating ? "text-amber-400" : "text-neutral-300"}`}>
-                        ★
-                      </span>
-                    ))}
-                  </span>
-                  <span className="ml-2">& up</span>
                 </Label>
               </div>
             ))}

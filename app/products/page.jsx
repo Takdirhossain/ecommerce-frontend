@@ -1,9 +1,25 @@
-import Footer from "@/components/common/Footer";
-import Navbar from "@/components/common/Navbar";
-import { ProductFilters } from "@/components/products/ProductFilters";
-import { ProductsGrid } from "@/components/products/ProductsGrid";
+import Footer from "@/components/common/Footer"
+import Navbar from "@/components/common/Navbar"
+import { ProductFilters } from "@/components/products/ProductFilters"
+import { API_URL } from "@/config/config"
 
-export default function ProductsPage() {
+export const revalidate = 60 // ISR: regenerate every 60 seconds
+
+export default async function ProductsPage({ searchParams }) {
+  const categoryParam = searchParams?.categories // comma-separated
+  const brandParam = searchParams?.brands
+  const minPrice = searchParams?.minPrice
+  const maxPrice = searchParams?.maxPrice
+
+  const params = new URLSearchParams()
+  if (categoryParam) params.set("categories", categoryParam)
+  if (brandParam) params.set("brands", brandParam)
+  if (minPrice) params.set("minPrice", minPrice)
+  if (maxPrice) params.set("maxPrice", maxPrice)
+
+  const res = await fetch(`${API_URL}/products/all?${params.toString()}`, {
+    next: { revalidate: 60 }
+  })
   return (
     <div>
       <Navbar />
