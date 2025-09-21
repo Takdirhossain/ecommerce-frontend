@@ -1,5 +1,4 @@
 import Navbar from "@/components/common/Navbar";
-import Hero from "@/components/home/Hero";
 import Products from "@/components/home/Products";
 import HorizontalRow from "@/components/common/HorizontalRow";
 import { FlashSale } from "@/components/home/FlashSale";
@@ -7,6 +6,7 @@ import Category from "@/components/home/Category";
 import Footer from "@/components/common/Footer";
 import { API_URL } from "@/config/config";
 import axios from "axios";
+import Hero from "@/components/home/Hero";
 
 async function fetchProducts() {
   try {

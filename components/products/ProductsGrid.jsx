@@ -118,14 +118,14 @@ const products = [
       ],
     },
   ];
-export function ProductsGrid() {
+export function ProductsGrid({products}) {
   const [sortBy, setSortBy] = useState("featured")
   const [viewMode, setViewMode] = useState("grid")
 
   return (
     <div>
       {/* Toolbar */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-2">
         <p className="text-sm text-neutral-600">Showing {products.length} products</p>
 
         <div className="flex items-center gap-4">
