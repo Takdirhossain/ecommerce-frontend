@@ -3,5 +3,7 @@ import { create } from "zustand";
 
 export const productStore = create((set) => ({
   products: [],
-  setProduct: (product) => set((state) => ({ products: [...state.products, product] })),
+  setProduct: (product) =>
+    set((state) => ({ products: [...state.products, product] })),
 }));
+
