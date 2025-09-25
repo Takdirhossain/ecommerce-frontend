@@ -11,22 +11,22 @@ import Hero from "@/components/home/Hero";
 async function fetchProducts() {
   try {
     const [newArrivalsRes, bestSellerRes, onSaleRes] = await Promise.all([
-      axios.get(`${API_URL}/products?type=new-arrivals&limit=10`, { next: { revalidate: 60 } }),
-      axios.get(`${API_URL}/products?type=best-seller&limit=10`, { next: { revalidate: 60 } }),
-      axios.get(`${API_URL}/products?type=on-sale&limit=10`, { next: { revalidate: 60 } }),
+      axios.get(`${API_URL}/products?type=new-arrival&limit=10`, { next: { revalidate: 60 } }),
+      axios.get(`${API_URL}/products?type=best-selling&limit=10`, { next: { revalidate: 60 } }),
+      axios.get(`${API_URL}/products?type=special-offer&limit=10`, { next: { revalidate: 60 } }),
     ]);
 
     return {
-      "new-arrivals": newArrivalsRes.data || [],
-      "best-seller": bestSellerRes.data || [],
-      "on-sale": onSaleRes.data || [],
+      "new-arrival": newArrivalsRes.data || [],
+      "best-selling": bestSellerRes.data || [],
+      "special-offer": onSaleRes.data || [],
     };
   } catch (error) {
     console.error("Error fetching products:", error);
     return {
-      "new-arrivals": [],
-      "best-seller": [],
-      "on-sale": [],
+      "new-arrival": [],
+      "best-selling": [],
+      "special-offer": [],
     };
   }
 }
@@ -63,7 +63,7 @@ export default async function Home() {
   return (
     <>
       <Navbar />
-      <Hero />
+      {/* <Hero /> */}
       <Products productsByType={productsByType} />
       <div className="w-full mt-20">
         <HorizontalRow />

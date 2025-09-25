@@ -5,16 +5,16 @@ import { Button } from "../ui/button";
 import { ArrowRight } from "lucide-react";
 
 export default function Products({ productsByType }) {
-  const [activeTab, setActiveTab] = useState("new-arrivals");
+  const [activeTab, setActiveTab] = useState("new-arrival");
   const products = productsByType[activeTab] || [];
 
   return (
     <section className="my-16 container mx-auto">
       <div className="flex justify-center flex-col items-center md:flex-row gap-6 mb-10 text-center">
         <h2
-          onClick={() => setActiveTab("new-arrivals")}
+          onClick={() => setActiveTab("new-arrival")}
           className={`text-3xl font-bold cursor-pointer ${
-            activeTab === "new-arrivals"
+            activeTab === "new-arrival"
               ? "text-zinc-900 underline"
               : "text-gray-500"
           }`}
@@ -22,9 +22,9 @@ export default function Products({ productsByType }) {
           New Arrivals
         </h2>
         <h2
-          onClick={() => setActiveTab("best-seller")}
+          onClick={() => setActiveTab("best-selling")}
           className={`text-3xl font-bold cursor-pointer ${
-            activeTab === "best-seller"
+            activeTab === "best-selling"
               ? "text-zinc-900 underline"
               : "text-gray-500"
           }`}
@@ -32,9 +32,9 @@ export default function Products({ productsByType }) {
           Best Seller
         </h2>
         <h2
-          onClick={() => setActiveTab("on-sale")}
+          onClick={() => setActiveTab("special-offer")}
           className={`text-3xl font-bold cursor-pointer ${
-            activeTab === "on-sale"
+            activeTab === "special-offer"
               ? "text-zinc-900 underline"
               : "text-gray-500"
           }`}

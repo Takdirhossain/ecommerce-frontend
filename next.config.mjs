@@ -15,7 +15,8 @@ const nextConfig = {
   //   ],
   // },
   images: {
-    remotePatterns: [new URL('http://localhost:8000/storage/**')],
+    // remotePatterns: [new URL('http://localhost:8000/storage/**')],
+    remotePatterns: [new URL('https://proslider.journalanatomy.com/storage/**')],
   },
 };
 
