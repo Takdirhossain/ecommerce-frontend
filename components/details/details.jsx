@@ -17,16 +17,31 @@ import {
 } from "lucide-react";
 import { ProductsGrid } from "../products/ProductsGrid";
 import CardComponent from "../common/Card";
-import Link from "next/link";
 import Image from "next/image";
 import { getImageUrl } from "@/config/config";
+import { productStore } from "@/store/useStore";
+import { useRouter } from "next/navigation";
 
 export default function ProductDetails({ product }) {
-  console.log(product);
   const [selectedImage, setSelectedImage] = useState(0);
-  const [selectedColor, setSelectedColor] = useState("blue");
-  const [selectedSize, setSelectedSize] = useState("40");
+  const [selectedSize, setSelectedSize] = useState();
   const [quantity, setQuantity] = useState(1);
+  const setProduct = productStore((state) => state.setProduct);
+  const router = useRouter();
+  const addToCart = (product, type) => {
+    const productData = {
+      ...product,
+      quantity,
+      selectedSize,
+    }
+    if (type === "cart") {
+      setProduct(productData);
+    }
+    if (type === "purchase") {
+      setProduct(productData);
+      router.push("/checkout");
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background mt-20">
@@ -83,54 +98,19 @@ export default function ProductDetails({ product }) {
                     {product?.product?.sale_price}
                   </span>
                   <span className="text-lg text-muted-foreground line-through">
-                    ৳{product.price}
+                    ৳{product?.product?.price}
                   </span>
-                  <Badge variant="destructive" className="text-xs">
+                  {/* <Badge variant="destructive" className="text-xs">
                     10% OFF
-                  </Badge>
+                  </Badge> */}
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 mb-4">
-                <div className="flex">
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <Star
-                      key={star}
-                      className="w-4 h-4 fill-yellow-400 text-yellow-400"
-                    />
-                  ))}
-                </div>
-                <span className="text-sm text-muted-foreground">(2)</span>
-              </div>
+
 
               <div className="flex items-center gap-2 text-sm text-orange-600 mb-4">
                 <Clock className="w-4 h-4" />
                 <span>27 sold in last 2 hours</span>
-              </div>
-            </div>
-
-            {/* Countdown Timer */}
-            <div className="p-4 border-0 ">
-              <p className="text-sm font-medium mb-2">
-                The offer will last till
-              </p>
-              <div className="flex gap-4">
-                <div className="text-center bg-third py-3 px-5 rounded-sm border">
-                  <div className="text-2xl font-bold">02</div>
-                  <div className="text-xs text-muted-foreground">DAYS</div>
-                </div>
-                <div className="text-center bg-third py-3 px-5 rounded-sm border">
-                  <div className="text-2xl font-bold">11</div>
-                  <div className="text-xs text-muted-foreground">HRS</div>
-                </div>
-                <div className="text-center bg-third py-3 px-5 rounded-sm border">
-                  <div className="text-2xl font-bold">36</div>
-                  <div className="text-xs text-muted-foreground">MIN</div>
-                </div>
-                <div className="text-center bg-third py-3 px-5 rounded-sm border">
-                  <div className="text-2xl font-bold">31</div>
-                  <div className="text-xs text-muted-foreground">SEC</div>
-                </div>
               </div>
             </div>
 
@@ -140,30 +120,31 @@ export default function ProductDetails({ product }) {
               }}
             />
 
-            {/* Color Selection */}
 
-            {/* Size Selection */}
             <div>
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-2">
-                  <span className="font-medium">Size:</span>
-                  <span>{selectedSize}</span>
-                </div>
-              </div>
-              <div className="flex gap-2">
-                {/* {sizes.map((size) => (
-                  <button
-                    key={size}
-                    onClick={() => setSelectedSize(size)}
-                    className={`px-4 py-2 border rounded-lg font-medium ${
-                      selectedSize === size
-                        ? "bg-primary text-primary-foreground border-primary"
-                        : "border-border hover:border-primary"
-                    }`}
-                  >
-                    {size}
-                  </button>
-                ))} */}
+              <div className="flex flex-wrap gap-3">
+                {product?.product?.options?.map((option) => (
+                  <div key={option?.id} className="flex flex-col gap-2">
+                    <span className="text-sm font-semibold text-muted-foreground">
+                      {option?.name}
+                    </span>
+
+                    <div className="flex gap-2">
+                      {option?.values?.map((value) => (
+                        <button
+                          key={value?.id}
+                          onClick={() => setSelectedSize(value?.option_value)}
+                          className={` h-8 w-8 rounded-full border font-medium transition-all duration-200 ${selectedSize === value?.option_value
+                  ? "bg-primary text-primary-foreground border-primary shadow-md scale-105"
+                  : "border-border text-muted-foreground hover:border-primary hover:text-primary"
+              }`}
+                        >
+                          {value?.option_value}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
 
@@ -198,12 +179,10 @@ export default function ProductDetails({ product }) {
 
             {/* Action Buttons */}
             <div className="space-y-3">
-              <Link href={`/checkout?product=12`}>
-                <button className="button-fourth rounded-md cursor-pointer w-full h-12 text-lg font-medium">
+              <button onClick={() => addToCart(product?.product, "purchase")} className="button-fourth rounded-md cursor-pointer w-full h-12 text-lg font-medium">
                   Buy It Now
                 </button>
-              </Link>
-              <Button className="w-full mt-2 h-12 text-lg cursor-pointer font-medium">
+              <Button handler={() => addToCart(product?.product, "cart")} className="w-full mt-2 h-12 text-lg cursor-pointer font-medium">
                 {" "}
                 Add to Cart <ShoppingCart width={20} height={20} />
               </Button>

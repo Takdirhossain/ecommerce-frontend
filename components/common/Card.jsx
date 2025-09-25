@@ -54,9 +54,9 @@ export default function CardComponent({ card }) {
           </div>
         </div>
       </Link>
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center gap-6">
         <div>
-          <h2 className="mt-2 font-semibold text-sm text-center">
+          <h2 className="mt-2 font-semibold text-sm ">
             {card?.name}
           </h2>
           <p className="font-semibold text-left text-[#f5857a]">
